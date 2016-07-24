@@ -1,0 +1,3 @@
+providers:
+    - virustotal:
+        key: abcde0123456789

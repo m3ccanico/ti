@@ -1,2 +1,3 @@
 from thread_intelligence import ThreadIntelligence
 from virus_total import VirusTotal
+from factory import Factory
