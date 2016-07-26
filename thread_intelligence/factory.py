@@ -1,4 +1,6 @@
 import virus_total
+import malwr
+import open_thread_exchange
 
 class Factory:
     @classmethod
@@ -9,6 +11,10 @@ class Factory:
             #print provider_cfg
             if 'virustotal' in provider_cfg:
                 providers.append(virus_total.VirusTotal(provider_cfg['virustotal']))
+            elif 'malwr' in provider_cfg:
+                providers.append(malwr.Malwr(provider_cfg['malwr']))
+            elif 'otx' in provider_cfg:
+                providers.append(open_thread_exchange.OpenThreadExchange(provider_cfg['otx']))
                 #print "virus"
         return providers
         #if 'virustotal' in cfg['providers']:

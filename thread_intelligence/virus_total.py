@@ -1,6 +1,8 @@
 import time
-import virustotal
+#import virustotal
 import os
+import json
+import urllib
 
 import thread_intelligence
 
@@ -31,18 +33,43 @@ class VirusTotal(thread_intelligence.ThreadIntelligence):
             file.write(self.ts)
             file.close
                 
-        self.vt = virustotal.VirusTotal(configuration['key'])
-    
+        #self.vt = virustotal.VirusTotal(configuration['key'])
+        self.key = configuration['key']
+
+    def header(self):
+        print "VirusTotal"
+
     def ip(self, ip):
         self.check_timeout()
-        report = self.vt.get(ip)
-        self.update_ts()
         
+        url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
+        parameters = {'ip': ip, 'apikey': self.key}
+        response = urllib.urlopen('%s?%s' % (url, urllib.urlencode(parameters))).read()
+        #print json.dumps(response, indent=2, sort_keys=True)
+        response_dict = json.loads(response)
+        #import pprint
+        #pp = pprint.PrettyPrinter(indent=2)
+        #pp.pprint(response_dict)
+        
+        if response_dict['response_code'] == 1:
+            self.header()
+            print "\tASN %s (%s)" % (response_dict['asn'], response_dict['as_owner'])
+            print "\t%i domains resolve to this ip" % len(response_dict['resolutions'])
+            print "\t%i URLs hosted on this IP and linked to malware" % len(response_dict['detected_urls'])
+            print "\t%i malicious files referring to this IP address" % len(response_dict['detected_referrer_samples'])
+            print "\t%i malicious files downloaded from this IP address" % len(response_dict['detected_downloaded_samples'])
+            print "\t%i maliciuos files communicating with this IP address" % len(response_dict['detected_communicating_samples'])
+            print "\t%i non-malicious files referring to this IP address" % len(response_dict['undetected_referrer_samples'])
+            print "\t%i non-malicious files downloaded from this IP address" % len(response_dict['undetected_downloaded_samples'])
+            print "\t%i non-maliciuos files communicating with this IP address" % len(response_dict['undetected_communicating_samples'])
+        
+        self.update_ts()
+
     def domain(self, domain):
         self.check_timeout()
         report = self.vt.get(domain)
         self.update_ts()
-    
+
     def hash(self, hash):
         self.check_timeout()
         report = self.vt.get(hash)
@@ -83,5 +110,6 @@ class VirusTotal(thread_intelligence.ThreadIntelligence):
         delta = time.time() - self.ts
         if delta < 15:
             #print "sleep:", str(15-delta)
+            logging.debug('wait %d seconds for timeout' % (15-delta))
             time.sleep(15-delta)
             
