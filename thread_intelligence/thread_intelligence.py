@@ -1,5 +1,6 @@
 import logging
 import re
+import os
 
 class ThreadIntelligence():
     
@@ -7,6 +8,7 @@ class ThreadIntelligence():
     TYPE_HASH = 'hash'
     TYPE_DOMAIN = 'domain'
     TYPE_IP = 'ip'
+    TYPE_FILE = 'file'
 
     @classmethod
     def get_type(cls, value):
@@ -27,6 +29,14 @@ class ThreadIntelligence():
         elif re.match('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$', value):
             type = ThreadIntelligence.TYPE_IP
             logging.debug('IPv4')
+        # file
+        elif os.path.isfile(value):
+            type = ThreadIntelligence.TYPE_FILE
+            logging.debug('file')
+        # domain
+        elif re.match('^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$', value):
+            type = ThreadIntelligence.TYPE_DOMAIN
+            logging.debug('domain')
         else:
             type = ThreadIntelligence.TYPE_NONE
             raise NotImplementedError
@@ -47,7 +57,10 @@ class ThreadIntelligence():
     def hash(self, hash):
         raise NotImplementedError
 
-    def file(self, file):
+    def file(self, filename):
+        raise NotImplementedError
+
+    def url(self, url):
         raise NotImplementedError
 
     def query(self, type, value):
@@ -57,6 +70,8 @@ class ThreadIntelligence():
             self.ip(value)
         elif type == ThreadIntelligence.TYPE_DOMAIN:
             self.domain(value)
+        elif type == ThreadIntelligence.TYPE_FILE:
+            self.file(value)
         else:
             raise NotImplementedError
 

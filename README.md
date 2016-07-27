@@ -8,3 +8,6 @@ Searches multiple thread intelligence feeds for information (hash, IP, domain)
 ```Bash
 brew install libyaml
 ```
+ downlaoad http://pyyaml.org/wiki/PyYAML
+
+ pip install requests requests_toolbelt bs4

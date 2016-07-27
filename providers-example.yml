@@ -1,3 +1,7 @@
 providers:
     - virustotal:
         key: abcde0123456789
+    - malwr:
+        key: abcde0123456789
+    - otx:
+        key: abcde0123456789

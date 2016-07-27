@@ -21,7 +21,7 @@ def main(argv):
     if args.debug:
         logging.basicConfig(level=logging.DEBUG,format="%(levelname)s: %(message)s")
     else:
-        logging.basicConfig(level=logging.INFO,format="%(message)s")
+        logging.basicConfig(level=logging.WARNING,format="%(message)s")
     
     # parse configuration file
     cfg = yaml.load(args.config)
@@ -31,7 +31,8 @@ def main(argv):
     
     for provider in providers:
         provider.query(type, args.value)
-        pass
+        #print "p"
+        #pass
         #provider.hash(args.value)
 
 
