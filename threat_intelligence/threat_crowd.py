@@ -4,17 +4,17 @@ import json
 import requests
 import logging
 
-import thread_intelligence
+import threat_intelligence
 from helper import Helper
 
-class VirusTotal(thread_intelligence.ThreadIntelligence):
+class ThreatCrowd(threat_intelligence.ThreatIntelligence):
     
-    def __init__(self, configuration):
+    def __init__(self):
         
         # check if caching file exists
-        if os.path.isfile('.cache/virustotal'):
+        if os.path.isfile(os.path.join('.cache', 'threatcrowd')):
             # read file
-            file = open('.cache/virustotal', 'r')
+            file = open(os.path.join('.cache', 'threatcrowd'), 'r')
             self.ts = file.read().strip()
             file.close
             
@@ -30,25 +30,25 @@ class VirusTotal(thread_intelligence.ThreadIntelligence):
             
             # creat ts file with current timestamp
             self.ts = time.time()
-            file = open(os.path.join('.cache', 'virustotal'), 'w')
+            file = open(os.path.join('.cache', 'threatcrowd'), 'w')
             file.write(self.ts)
             file.close
                 
-        #self.vt = virustotal.VirusTotal(configuration['key'])
-        self.key = configuration['key']
+        #self.vt = threat_crowd.ThreatCrowd(configuration['key'])
+        #self.key = configuration['key']
 
     def header(self):
-        print "-\nVirusTotal"
+        print "-\nThreatCrowd"
 
     def ip(self, ip):
         self.check_timeout()
         
-        url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
-        parameters = {'ip': ip, 'apikey': self.key}
-        response = requests.get(url, params=parameters)
+        url = 'https://www.threatcrowd.org/searchApi/v2/ip/report/?ip=%s' % ip
+        #parameters = {'ip': ip, 'apikey': self.key}
+        response = requests.get(url)#, params=parameters)
         response_dict = json.loads(response.text)
         Helper.prettyprint(response_dict)
-
+        
         if response_dict['response_code'] == 1:
             self.header()
             if 'asn' in response_dict and 'as_owner' in response_dict: print "\tASN: %s (%s)" % (response_dict['asn'], response_dict['as_owner'])
@@ -154,8 +154,8 @@ class VirusTotal(thread_intelligence.ThreadIntelligence):
     
     def check_timeout(self):
         delta = time.time() - self.ts
-        if delta < 15:
+        if delta < 10:
             #print "sleep:", str(15-delta)
-            logging.debug('wait %d seconds for timeout' % (15-delta))
-            time.sleep(15-delta)
+            logging.debug('wait %d seconds for timeout' % (10-delta))
+            time.sleep(10-delta)
             

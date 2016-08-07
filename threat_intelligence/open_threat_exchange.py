@@ -3,16 +3,16 @@
 import json
 import requests
 
-import thread_intelligence
+import threat_intelligence
 from helper import Helper
 
-class OpenThreadExchange(thread_intelligence.ThreadIntelligence):
+class OpenThreatExchange(threat_intelligence.ThreatIntelligence):
     
     def __init__(self, configuration):
         self.key = configuration['key']
 
     def header(self):
-        print "-\nOpenThreadExchange"
+        print "-\nOpenThreatExchange"
 
     def ip(self, ip):
         self.header()

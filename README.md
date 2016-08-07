@@ -1,5 +1,5 @@
 # ti
-Searches multiple thread intelligence feeds for information (hash, IP, domain)
+Searches multiple threat intelligence feeds for information (hash, IP, domain)
 
 ## Installation
 

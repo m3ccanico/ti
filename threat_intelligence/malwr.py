@@ -4,11 +4,13 @@
 #import json
 #import urllib
 
-from MalwrAPI import MalwrAPI
+# MalwrAPI only supports submitting of samples
 
-import thread_intelligence
+#from MalwrAPI import MalwrAPI
 
-class Malwr(thread_intelligence.ThreadIntelligence):
+import threat_intelligence
+
+class Malwr(threat_intelligence.ThreatIntelligence):
     
     def __init__(self, configuration):
         self.key = configuration['key']

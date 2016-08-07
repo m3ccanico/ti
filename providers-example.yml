@@ -1,7 +1,9 @@
 providers:
     - virustotal:
         key: abcde0123456789
-    - malwr:
-        key: abcde0123456789
+# Malwr currently not supported because API only supports submitting of samples but not searching
+#    - malwr:
+#        key: abcde0123456789
     - otx:
         key: abcde0123456789
+    - threat_crowd

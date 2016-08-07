@@ -5,12 +5,12 @@ import logging
 import sys
 import yaml
 
-import thread_intelligence
+import threat_intelligence
 
 def main(argv):
     
     # parse command line arguments
-    parser = argparse.ArgumentParser(description='Looks up thread intelligence from various sources.')
+    parser = argparse.ArgumentParser(description='Looks up threat intelligence from various sources.')
     parser.add_argument('-c', '--config', default='providers.yml', metavar='FILE', type=file, help='configuration file, default providers.yml')
     parser.add_argument('-d', '--debug', action='store_true')
     parser.add_argument('value', type=str, help='a value to lookup (hash, ip, domain)')
@@ -25,9 +25,9 @@ def main(argv):
     
     # parse configuration file
     cfg = yaml.load(args.config)
-    providers = thread_intelligence.Factory.parse_providers(cfg)
+    providers = threat_intelligence.Factory.parse_providers(cfg)
     
-    type = thread_intelligence.ThreadIntelligence.get_type(args.value)
+    type = threat_intelligence.ThreatIntelligence.get_type(args.value)
     
     for provider in providers:
         provider.query(type, args.value)

@@ -2,7 +2,7 @@ import logging
 import re
 import os
 
-class ThreadIntelligence():
+class ThreatIntelligence():
     
     TYPE_NONE = 'none'
     TYPE_HASH = 'hash'
@@ -12,33 +12,33 @@ class ThreadIntelligence():
 
     @classmethod
     def get_type(cls, value):
-        type = ThreadIntelligence.TYPE_NONE
+        type = ThreatIntelligence.TYPE_NONE
         # MD5
         if re.match('^[a-f0-9]{32}$', value, re.IGNORECASE):
-            type = ThreadIntelligence.TYPE_HASH
+            type = ThreatIntelligence.TYPE_HASH
             logging.debug('MD5')
         # SHA1
         elif re.match('^[a-f0-9]{40}$', value, re.IGNORECASE):
-            type = ThreadIntelligence.TYPE_HASH
+            type = ThreatIntelligence.TYPE_HASH
             logging.debug('SHA1')
         # SHA256
         elif re.match('^[a-f0-9]{64}$', value, re.IGNORECASE):
-            type = ThreadIntelligence.TYPE_HASH
+            type = ThreatIntelligence.TYPE_HASH
             logging.debug('SHA256')
         # IPv4
         elif re.match('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$', value):
-            type = ThreadIntelligence.TYPE_IP
+            type = ThreatIntelligence.TYPE_IP
             logging.debug('IPv4')
         # file
         elif os.path.isfile(value):
-            type = ThreadIntelligence.TYPE_FILE
+            type = ThreatIntelligence.TYPE_FILE
             logging.debug('file')
         # domain
         elif re.match('^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$', value):
-            type = ThreadIntelligence.TYPE_DOMAIN
+            type = ThreatIntelligence.TYPE_DOMAIN
             logging.debug('domain')
         else:
-            type = ThreadIntelligence.TYPE_NONE
+            type = ThreatIntelligence.TYPE_NONE
             raise NotImplementedError
         return type
 
@@ -64,13 +64,13 @@ class ThreadIntelligence():
         raise NotImplementedError
 
     def query(self, type, value):
-        if type == ThreadIntelligence.TYPE_HASH:
+        if type == ThreatIntelligence.TYPE_HASH:
             self.hash(value)
-        elif type == ThreadIntelligence.TYPE_IP:
+        elif type == ThreatIntelligence.TYPE_IP:
             self.ip(value)
-        elif type == ThreadIntelligence.TYPE_DOMAIN:
+        elif type == ThreatIntelligence.TYPE_DOMAIN:
             self.domain(value)
-        elif type == ThreadIntelligence.TYPE_FILE:
+        elif type == ThreatIntelligence.TYPE_FILE:
             self.file(value)
         else:
             raise NotImplementedError
