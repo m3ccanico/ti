@@ -9,12 +9,14 @@ from helper import Helper
 
 class VirusTotal(threat_intelligence.ThreatIntelligence):
     
-    def __init__(self, configuration):
+    def __init__(self, configuration, arguments):
+        
+        self.ts_file = os.path.join('.cache', 'threatcrowd')
         
         # check if caching file exists
-        if os.path.isfile(os.path.join('.cache', 'virustotal')):
+        if os.path.isfile(self.ts_file):
             # read file
-            file = open(os.path.join('.cache', 'virustotal'), 'r')
+            file = open(self.ts_file, 'r')
             self.ts = file.read().strip()
             file.close
             
@@ -30,7 +32,7 @@ class VirusTotal(threat_intelligence.ThreatIntelligence):
             
             # creat ts file with current timestamp
             self.ts = time.time()
-            file = open(os.path.join('.cache', 'virustotal'), 'w')
+            file = open(self.ts_file, 'w')
             file.write(self.ts)
             file.close
                 
@@ -51,15 +53,24 @@ class VirusTotal(threat_intelligence.ThreatIntelligence):
         
         if response_dict['response_code'] == 1:
             self.header()
-            if 'asn' in response_dict and 'as_owner' in response_dict: print "\tASN: %s (%s)" % (response_dict['asn'], response_dict['as_owner'])
-            if 'resolutions' in response_dict: print "\t%i domains resolve to this ip" % len(response_dict['resolutions'])
-            if 'detected_urls' in response_dict: print "\t%i URLs hosted on this IP and linked to malware" % len(response_dict['detected_urls'])
-            if 'detected_referrer_samples' in response_dict: print "\t%i malicious files referring to this IP address" % len(response_dict['detected_referrer_samples'])
-            if 'detected_downloaded_samples' in response_dict: print "\t%i malicious files downloaded from this IP address" % len(response_dict['detected_downloaded_samples'])
-            if 'detected_communicating_samples' in response_dict: print "\t%i maliciuos files communicating with this IP address" % len(response_dict['detected_communicating_samples'])
-            if 'undetected_referrer_samples' in response_dict: print "\t%i non-malicious files referring to this IP address" % len(response_dict['undetected_referrer_samples'])
-            if 'undetected_downloaded_samples' in response_dict: print "\t%i non-malicious files downloaded from this IP address" % len(response_dict['undetected_downloaded_samples'])
-            if 'undetected_communicating_samples' in response_dict: print "\t%i non-maliciuos files communicating with this IP address" % len(response_dict['undetected_communicating_samples'])
+            if 'asn' in response_dict and 'as_owner' in response_dict: 
+                print "\tASN: %s (%s)" % (response_dict['asn'], response_dict['as_owner'])
+            if 'resolutions' in response_dict: 
+                print "\t%i domains resolve to this ip" % len(response_dict['resolutions'])
+            if 'detected_urls' in response_dict: 
+                print "\t%i URLs hosted on this IP and linked to malware" % len(response_dict['detected_urls'])
+            if 'detected_referrer_samples' in response_dict: 
+                print "\t%i malicious files referring to this IP address" % len(response_dict['detected_referrer_samples'])
+            if 'detected_downloaded_samples' in response_dict: 
+                print "\t%i malicious files downloaded from this IP address" % len(response_dict['detected_downloaded_samples'])
+            if 'detected_communicating_samples' in response_dict: 
+                print "\t%i maliciuos files communicating with this IP address" % len(response_dict['detected_communicating_samples'])
+            if 'undetected_referrer_samples' in response_dict: 
+                print "\t%i non-malicious files referring to this IP address" % len(response_dict['undetected_referrer_samples'])
+            if 'undetected_downloaded_samples' in response_dict: 
+                print "\t%i non-malicious files downloaded from this IP address" % len(response_dict['undetected_downloaded_samples'])
+            if 'undetected_communicating_samples' in response_dict: 
+                print "\t%i non-maliciuos files communicating with this IP address" % len(response_dict['undetected_communicating_samples'])
         else:
             logging.error("unknown response code: %s" % response_dict['response_code'])
         
@@ -74,18 +85,25 @@ class VirusTotal(threat_intelligence.ThreatIntelligence):
         response_dict = json.loads(response.text)
         #Helper.prettyprint(response_dict)
         
-        self.header()
         if response_dict['response_code'] == 1:
+            self.header()
             print "\tCategories: %s" % ', '.join(response_dict['categories'])
             ips = (resolution['ip_address'] for resolution in response_dict['resolutions'])
             print "\tResolved IPs: %s" % ', '.join(ips)
-            if 'detected_urls' in response_dict: print "\t%i domains linked to the URL and malware" % len(response_dict['detected_urls'])
-            if 'detected_referrer_samples' in response_dict: print "\t%i malicious files referring to this domain" % len(response_dict['detected_referrer_samples'])
-            if 'detected_downloaded_samples' in response_dict: print "\t%i malicious files downloaded from this domain" % len(response_dict['detected_downloaded_samples'])
-            if 'detected_communicating_samples' in response_dict: print "\t%i maliciuos files communicating with this domain" % len(response_dict['detected_communicating_samples'])
-            if 'undetected_referrer_samples' in response_dict: print "\t%i non-malicious files referring to this domain" % len(response_dict['undetected_referrer_samples'])
-            if 'undetected_downloaded_samples' in response_dict: print "\t%i non-malicious files downloaded from this domain" % len(response_dict['undetected_downloaded_samples'])
-            if 'domain_siblings' in response_dict: print "\t%i domain name siblings" % len(response_dict['domain_siblings'])
+            if 'detected_urls' in response_dict: 
+                print "\t%i domains linked to the URL and malware" % len(response_dict['detected_urls'])
+            if 'detected_referrer_samples' in response_dict: 
+                print "\t%i malicious files referring to this domain" % len(response_dict['detected_referrer_samples'])
+            if 'detected_downloaded_samples' in response_dict: 
+                print "\t%i malicious files downloaded from this domain" % len(response_dict['detected_downloaded_samples'])
+            if 'detected_communicating_samples' in response_dict: 
+                print "\t%i maliciuos files communicating with this domain" % len(response_dict['detected_communicating_samples'])
+            if 'undetected_referrer_samples' in response_dict: 
+                print "\t%i non-malicious files referring to this domain" % len(response_dict['undetected_referrer_samples'])
+            if 'undetected_downloaded_samples' in response_dict: 
+                print "\t%i non-malicious files downloaded from this domain" % len(response_dict['undetected_downloaded_samples'])
+            if 'domain_siblings' in response_dict: 
+                print "\t%i domain name siblings" % len(response_dict['domain_siblings'])
         elif response_dict['response_code'] == 0:
             print "\t%s" % response_dict['verbose_msg']
         else:
@@ -102,8 +120,8 @@ class VirusTotal(threat_intelligence.ThreatIntelligence):
         response_dict = json.loads(response.text)
         #Helper.prettyprint(response_dict)
         
-        self.header()
         if response_dict['response_code'] == 1:
+            self.header()
             print "\tScan date: %s" % response_dict['scan_date']
             print "\tMD5:       %s" % response_dict['md5']
             print "\tSHA1:      %s" % response_dict['sha1']
@@ -111,7 +129,6 @@ class VirusTotal(threat_intelligence.ThreatIntelligence):
             print "\tConsidered malicious by %s out of %d scanners" % (response_dict['positives'], response_dict['total'])
             scanners = (key for key, value in response_dict['scans'].iteritems())
             print "\tScanned by: %s" % ', '.join(scanners)
-            pass
         elif response_dict['response_code'] == 0:
             print "\t%s" % response_dict['verbose_msg']
         else:
@@ -129,8 +146,8 @@ class VirusTotal(threat_intelligence.ThreatIntelligence):
         response_dict = json.loads(response.text)
         #Helper.prettyprint(response_dict)
         
-        self.header()
         if response_dict['response_code'] == 1:
+            self.header()
             print "\tMD5:       %s" % response_dict['md5']
             print "\tSHA1:      %s" % response_dict['sha1']
             print "\tSHA-256:   %s" % response_dict['sha256']
@@ -147,7 +164,7 @@ class VirusTotal(threat_intelligence.ThreatIntelligence):
         
         # creat ts file with current timestamp
         self.ts = time.time()
-        file = open('.cache/virustotal', 'w')
+        file = open(self.ts_file, 'w')
         file.write(str(self.ts))
         file.close
         #print "updated ts"

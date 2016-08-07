@@ -1,6 +1,7 @@
 import logging
 import re
 import os
+import validators
 
 class ThreatIntelligence():
     
@@ -9,6 +10,8 @@ class ThreatIntelligence():
     TYPE_DOMAIN = 'domain'
     TYPE_IP = 'ip'
     TYPE_FILE = 'file'
+    TYPE_EMAIL = 'email'
+    TYPE_URL = 'url'
 
     @classmethod
     def get_type(cls, value):
@@ -17,51 +20,80 @@ class ThreatIntelligence():
         if re.match('^[a-f0-9]{32}$', value, re.IGNORECASE):
             type = ThreatIntelligence.TYPE_HASH
             logging.debug('MD5')
+        
         # SHA1
         elif re.match('^[a-f0-9]{40}$', value, re.IGNORECASE):
             type = ThreatIntelligence.TYPE_HASH
             logging.debug('SHA1')
+        
         # SHA256
         elif re.match('^[a-f0-9]{64}$', value, re.IGNORECASE):
             type = ThreatIntelligence.TYPE_HASH
             logging.debug('SHA256')
+        
         # IPv4
-        elif re.match('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$', value):
+        elif validators.ipv4(value):
             type = ThreatIntelligence.TYPE_IP
-            logging.debug('IPv4')
+            logging.debug(ThreatIntelligence.TYPE_IP)
+        
         # file
         elif os.path.isfile(value):
             type = ThreatIntelligence.TYPE_FILE
-            logging.debug('file')
+            logging.debug(ThreatIntelligence.TYPE_FILE)
+        
+        # email
+        elif validators.email(value):
+            type = ThreatIntelligence.TYPE_EMAIL
+            logging.debug(ThreatIntelligence.TYPE_EMAIL)
+        
         # domain
-        elif re.match('^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$', value):
+        elif validators.domain(value):
             type = ThreatIntelligence.TYPE_DOMAIN
-            logging.debug('domain')
+            logging.debug(ThreatIntelligence.TYPE_DOMAIN)
+        
+        # url
+        elif validators.url(value):
+            type = ThreatIntelligence.TYPE_URL
+            logging.debug(ThreatIntelligence.TYPE_URL)
+        
         else:
             type = ThreatIntelligence.TYPE_NONE
             raise NotImplementedError
         return type
 
-    def __init__(self, configuration):
+    def __init__(self, configuration, arguments):
         pass
 
     def header(self):
         raise NotImplementedError
 
     def ip(self, ip):
-        raise NotImplementedError
+        #raise NotImplementedError
+        pass
 
     def domain(self, domain):
-        raise NotImplementedError
-
-    def hash(self, hash):
-        raise NotImplementedError
-
-    def file(self, filename):
-        raise NotImplementedError
+        #raise NotImplementedError
+        pass
 
     def url(self, url):
-        raise NotImplementedError
+        #raise NotImplementedError
+        pass
+
+    def email(self, email):
+        #raise NotImplementedError
+        pass
+
+    def hash(self, hash):
+        #raise NotImplementedError
+        pass
+
+    def file(self, filename):
+        #raise NotImplementedError
+        pass
+
+    def url(self, url):
+        #raise NotImplementedError
+        pass
 
     def query(self, type, value):
         if type == ThreatIntelligence.TYPE_HASH:
@@ -70,6 +102,10 @@ class ThreatIntelligence():
             self.ip(value)
         elif type == ThreatIntelligence.TYPE_DOMAIN:
             self.domain(value)
+        elif type == ThreatIntelligence.TYPE_URL:
+            self.url(value)
+        elif type == ThreatIntelligence.TYPE_EMAIL:
+            self.email(value)
         elif type == ThreatIntelligence.TYPE_FILE:
             self.file(value)
         else:

@@ -12,7 +12,7 @@ import threat_intelligence
 
 class Malwr(threat_intelligence.ThreatIntelligence):
     
-    def __init__(self, configuration):
+    def __init__(self, configuration, arguments):
         self.key = configuration['key']
         self.username = configuration['username']
         self.password = configuration['password']

@@ -6,4 +6,4 @@ providers:
 #        key: abcde0123456789
     - otx:
         key: abcde0123456789
-    - threat_crowd
+    - threatcrowd
